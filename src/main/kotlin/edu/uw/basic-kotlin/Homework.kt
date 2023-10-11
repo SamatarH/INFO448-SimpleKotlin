@@ -58,47 +58,51 @@ class Person(val firstName: String, val lastName: String, var age: Int) {
 
 // write a class "Money" with amount and currency, and define a convert() method and the "+" operator
 
-class Money(var amount: Int, var currency: String) {
+class Money(private var _amount: Int, private val _currency: String) {
     init {
-        if (currency != "USD" && currency != "EUR" &&
-                currency != "CAN" && currency != "GBP") {
-            throw Exception("Currency not supported!")
-        } else if (amount < 0) {
-            throw Exception("Amount can't be less than zero!")
-        }
+        require(_amount >= 0) { "Amount can't be negative" }
+        require(_currency in setOf("USD", "EUR", "CAN", "GBP")) { "Invalid currency" }
     }
 
-    private fun switch(currency: String, function: () -> () -> String) {
+    val amount: Int
+        get() = _amount
 
-    }
+    val currency: String
+        get() = _currency
 
-    fun convert(newCurrency: String): Money {
-        var newAmount = 10 
-        when (this.currency) {
-            "USD" -> when (newCurrency) {
-                "GBP" -> newAmount = 5
-                "USD" -> newAmount = 10
-                "EUR" -> newAmount = 15
-                "CAN" -> newAmount = 15
+    fun convert(targetCurrency: String): Money {
+        val conversionRate = when (_currency) {
+            "USD" -> when (targetCurrency) {
+                "GBP" -> _amount / 2
+                "EUR" -> _amount * 3 / 2
+                "CAN" -> _amount * 5 / 4
+                else -> _amount
             }
 
-            "GBP" -> when (newCurrency) {
-                "GBP" -> newAmount = 5
-                "USD" -> newAmount = 10
-                "EUR" -> newAmount = 15
+            "GBP" -> when (targetCurrency) {
+                "USD" -> _amount * 2
+                "EUR" -> _amount * 3
+                "CAN" -> _amount * 5 / 2
+                else -> _amount
             }
 
-            "EUR" -> when (newCurrency) {
-                "GBP" -> newAmount = 5
-                "USD" -> newAmount = 10
-                "EUR" -> newAmount = 15
+            "EUR" -> when (targetCurrency) {
+                "USD" -> _amount * 2 / 3
+                "GBP" -> _amount / 3
+                "CAN" -> _amount * 5 / 6
+                else -> _amount
             }
 
-            "CAN" -> when (newCurrency) {
-                "USD" -> newAmount = 12
+            "CAN" -> when (targetCurrency) {
+                "USD" -> _amount * 4 / 5
+                "GBP" -> _amount * 2 / 5
+                "EUR" -> _amount * 6 / 5
+                else -> _amount
             }
+
+            else -> _amount
         }
-        return Money(newAmount, newCurrency)
+        return Money(conversionRate, targetCurrency)
     }
 
     operator fun plus(other: Money): Money {
