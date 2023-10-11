@@ -68,29 +68,33 @@ class Money(var amount: Int, var currency: String) {
         }
     }
 
+    private fun switch(currency: String, function: () -> () -> String) {
+
+    }
+
     fun convert(newCurrency: String): Money {
         var newAmount = 10 
-        switch (this.currency) {
-            "USD" -> switch (newCurrency) {
+        when (this.currency) {
+            "USD" -> when (newCurrency) {
                 "GBP" -> newAmount = 5
                 "USD" -> newAmount = 10
                 "EUR" -> newAmount = 15
                 "CAN" -> newAmount = 15
             }
 
-            "GBP" -> switch (newCurrency) {
+            "GBP" -> when (newCurrency) {
                 "GBP" -> newAmount = 5
                 "USD" -> newAmount = 10
                 "EUR" -> newAmount = 15
             }
 
-            "EUR" -> switch (newCurrency) {
+            "EUR" -> when (newCurrency) {
                 "GBP" -> newAmount = 5
                 "USD" -> newAmount = 10
                 "EUR" -> newAmount = 15
             }
 
-            "CAN" -> switch (newCurrency) {
+            "CAN" -> when (newCurrency) {
                 "USD" -> newAmount = 12
             }
         }
